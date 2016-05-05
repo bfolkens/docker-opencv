@@ -1,5 +1,5 @@
 LOCAL_NAME=opencv
-VERSION=master-cuda7.0-cudnn4
+VERSION=2.4.11-cuda7.0-cudnn4
 PUBLIC_NAME=docker-opencv
 REPOSITORY=bfolkens
 
