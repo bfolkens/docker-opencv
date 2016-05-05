@@ -2,7 +2,7 @@ FROM nvidia/cuda:7.0-cudnn4-devel
 
 # Install some dep packages
 
-ENV OPENCV_VERSION 2.4.12
+ENV OPENCV_VERSION 2.4.10
 #ENV OPENCV_PACKAGES
 
 RUN apt-get update && \
@@ -32,7 +32,7 @@ RUN cd /usr/local/src && \
     cmake -D CMAKE_BUILD_TYPE=Release \
           -D CMAKE_INSTALL_PREFIX=/usr \
           -D BUILD_EXAMPLES=OFF \
-          -D CUDA_GENERATION=Auto \
+          -D CUDA_GENERATION=Kepler \
           -D WITH_TBB=ON -D WITH_V4L=ON -D WITH_VTK=ON -D WITH_OPENGL=OFF -D WITH_QT=OFF .. && \
     make && make install && \
     rm -rf /usr/local/src/opencv*
