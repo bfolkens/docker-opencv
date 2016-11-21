@@ -1,5 +1,5 @@
 LOCAL_NAME=opencv
-VERSION=master-cuda7.0-cudnn4
+VERSION=`git rev-parse --abbrev-ref HEAD`
 PUBLIC_NAME=docker-opencv
 REPOSITORY=bfolkens
 
