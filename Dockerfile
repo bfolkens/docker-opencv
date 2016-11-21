@@ -1,9 +1,9 @@
-FROM nvidia/cuda:7.0-cudnn4-devel
+FROM nvidia/cuda:8.0-cudnn5-devel
 
 # Install some dep packages
 
-ENV OPENCV_VERSION 2.4.12
-#ENV OPENCV_PACKAGES
+ENV OPENCV_VERSION 3.1.0
+ENV OPENCV_PACKAGES libswscale-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
 
 RUN apt-get update && \
     apt-get install -y git wget build-essential unzip $OPENCV_PACKAGES && \
@@ -24,16 +24,21 @@ RUN cd /usr/local/src && \
 # Install OpenCV
 
 RUN cd /usr/local/src && \
-    wget -O opencv-$OPENCV_VERSION.zip https://github.com/Itseez/opencv/archive/$OPENCV_VERSION.zip && \
-    unzip opencv-$OPENCV_VERSION.zip && \
-    cd opencv-$OPENCV_VERSION && \
+    git clone https://github.com/opencv/opencv.git && \
+    cd opencv && \
+    git checkout $OPENCV_VERSION && \
+    git format-patch -1 10896129b39655e19e4e7c529153cb5c2191a1db && \
+    GIT_COMMITTER_NAME='Temporary Committer' GIT_COMMITTER_EMAIL='temp@temp.com' git am < 0001-GraphCut-deprecated-in-CUDA-7.5-and-removed-in-8.0.patch && \
     mkdir build && \
     cd build && \
     cmake -D CMAKE_BUILD_TYPE=Release \
           -D CMAKE_INSTALL_PREFIX=/usr \
           -D BUILD_EXAMPLES=OFF \
           -D CUDA_GENERATION=Auto \
-          -D WITH_TBB=ON -D WITH_V4L=ON -D WITH_VTK=ON -D WITH_OPENGL=OFF -D WITH_QT=OFF .. && \
+          -D WITH_IPP=OFF -D WITH_TBB=ON \
+          -D WITH_FFMPEG=OFF -D WITH_V4L=OFF \
+          -D ENABLE_FAST_MATH=1 -D CUDA_FAST_MATH=1 -D WITH_CUBLAS=1 \
+          -D WITH_VTK=OFF -D WITH_OPENGL=OFF -D WITH_QT=OFF .. && \
     make && make install && \
     rm -rf /usr/local/src/opencv*
 
