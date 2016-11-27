@@ -27,8 +27,6 @@ RUN cd /usr/local/src && \
     git clone https://github.com/opencv/opencv.git && \
     cd opencv && \
     git checkout $OPENCV_VERSION && \
-    git format-patch -1 10896129b39655e19e4e7c529153cb5c2191a1db && \
-    GIT_COMMITTER_NAME='Temporary Committer' GIT_COMMITTER_EMAIL='temp@temp.com' git am < 0001-GraphCut-deprecated-in-CUDA-7.5-and-removed-in-8.0.patch && \
     mkdir build && \
     cd build && \
     cmake -D CMAKE_BUILD_TYPE=Release \
