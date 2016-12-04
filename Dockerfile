@@ -37,5 +37,5 @@ RUN cd /usr/local/src && \
     make -j$(nproc) && \
     make install && \
     cp lib/cv2.so /usr/local/lib/python2.7/dist-packages/ && \
-    rm -rf /usr/local/src/opencv
+    rm -rf /usr/local/src/opencv-$OPENCV_VERSION.zip /usr/local/src/opencv-$OPENCV_VERSION
 
