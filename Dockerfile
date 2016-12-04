@@ -3,10 +3,9 @@ FROM nvidia/cuda:7.0-cudnn4-devel
 # Install some dep packages
 
 ENV OPENCV_VERSION 2.4.12
-#ENV OPENCV_PACKAGES
 
 RUN apt-get update && \
-    apt-get install -y git wget build-essential unzip $OPENCV_PACKAGES && \
+    apt-get install -y git wget build-essential unzip python2.7 python2.7-dev python-numpy python-scipy && \
     apt-get remove -y cmake && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -31,9 +30,12 @@ RUN cd /usr/local/src && \
     cd build && \
     cmake -D CMAKE_BUILD_TYPE=Release \
           -D CMAKE_INSTALL_PREFIX=/usr \
+          -D BUILD_opencv_python=on \
           -D BUILD_EXAMPLES=OFF \
           -D CUDA_GENERATION=Auto \
           -D WITH_TBB=ON -D WITH_V4L=ON -D WITH_VTK=ON -D WITH_OPENGL=OFF -D WITH_QT=OFF .. && \
-    make && make install && \
-    rm -rf /usr/local/src/opencv*
+    make -j$(nproc) && \
+    make install && \
+    cp lib/cv2.so /usr/local/lib/python2.7/dist-packages/ && \
+    rm -rf /usr/local/src/opencv
 
