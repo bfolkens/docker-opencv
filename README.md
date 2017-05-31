@@ -1,1 +1,1 @@
-OpenCV docker build with CUDA 7.0, cudnn4 from NVIDIA for nvidia-docker.
+OpenCV docker build with CUDA 8.0, cudnn6 from NVIDIA for nvidia-docker.

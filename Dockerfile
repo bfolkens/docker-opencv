@@ -1,4 +1,4 @@
-FROM nvidia/cuda:8.0-cudnn5-devel
+FROM nvidia/cuda:8.0-cudnn6-devel-ubuntu16.04
 
 # Install some dep packages
 
@@ -41,4 +41,3 @@ RUN cd /usr/local/src && \
           -D WITH_VTK=OFF -D WITH_OPENGL=OFF -D WITH_QT=OFF .. && \
     make && make install && \
     rm -rf /usr/local/src/opencv*
-
