@@ -2,12 +2,11 @@ FROM nvidia/cuda:8.0-cudnn6-devel-ubuntu16.04
 
 # Install some dep packages
 
-ENV OPENCV_VERSION 3.2.0
+ENV OPENCV_VERSION 3.1.0
 ENV OPENCV_PACKAGES libswscale-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
-ENV FFMPEG_DEV_PACKAGES libavcodec-dev libavfilter-dev libavformat-dev libavresample-dev libavutil-dev libpostproc-dev libswresample-dev libswscale-dev
 
 RUN apt-get update && \
-    apt-get install -y git wget build-essential unzip $OPENCV_PACKAGES $FFMPEG_DEV_PACKAGES && \
+    apt-get install -y git wget build-essential unzip $OPENCV_PACKAGES && \
     apt-get remove -y cmake && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -28,6 +27,8 @@ RUN cd /usr/local/src && \
     git clone https://github.com/opencv/opencv.git && \
     cd opencv && \
     git checkout $OPENCV_VERSION && \
+    git format-patch -1 10896129b39655e19e4e7c529153cb5c2191a1db && \
+    GIT_COMMITTER_NAME='Temporary Committer' GIT_COMMITTER_EMAIL='temp@temp.com' git am < 0001-GraphCut-deprecated-in-CUDA-7.5-and-removed-in-8.0.patch && \
     mkdir build && \
     cd build && \
     cmake -D CMAKE_BUILD_TYPE=Release \
@@ -35,7 +36,7 @@ RUN cd /usr/local/src && \
           -D BUILD_EXAMPLES=OFF \
           -D CUDA_GENERATION=Auto \
           -D WITH_IPP=OFF -D WITH_TBB=ON \
-          -D WITH_FFMPEG=ON -D WITH_V4L=OFF \
+          -D WITH_FFMPEG=OFF -D WITH_V4L=OFF \
           -D ENABLE_FAST_MATH=1 -D CUDA_FAST_MATH=1 -D WITH_CUBLAS=1 \
           -D WITH_VTK=OFF -D WITH_OPENGL=OFF -D WITH_QT=OFF .. && \
     make && make install && \
