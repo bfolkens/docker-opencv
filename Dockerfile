@@ -7,7 +7,7 @@ ENV OPENCV_PACKAGES libswscale-dev libjpeg-dev libpng-dev libtiff-dev libjasper-
 ENV FFMPEG_DEV_PACKAGES libavcodec-dev libavfilter-dev libavformat-dev libavresample-dev libavutil-dev libpostproc-dev libswresample-dev libswscale-dev
 
 RUN apt-get update && \
-    apt-get install -y git wget build-essential unzip $OPENCV_PACKAGES $FFMPEG_DEV_PACKAGES && \
+    apt-get install -y git wget build-essential pkg-config unzip $OPENCV_PACKAGES $FFMPEG_DEV_PACKAGES && \
     apt-get remove -y cmake && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
