@@ -15,9 +15,9 @@ RUN apt-get update && \
 # Install custom, accelerated FFMPEG
 
 RUN cd /usr/local/src && \
-    wget http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 && \
-    tar xjvf ffmpeg-snapshot.tar.bz2 && \
+    git clone https://github.com/FFmpeg/FFmpeg.git ffmpeg && \
     cd /usr/local/src/ffmpeg && \
+    git checkout n3.3.1 && \
     ./configure \
       --build-suffix=-ffmpeg --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --cc=cc --cxx=g++ \
       --enable-gpl --enable-shared --disable-stripping --enable-avresample \
