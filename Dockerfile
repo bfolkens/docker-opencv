@@ -4,12 +4,31 @@ FROM nvidia/cuda:8.0-cudnn6-devel-ubuntu16.04
 
 ENV OPENCV_VERSION 3.2.0
 ENV OPENCV_PACKAGES libswscale-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
-ENV FFMPEG_DEV_PACKAGES libavcodec-dev libavfilter-dev libavformat-dev libavresample-dev libavutil-dev libpostproc-dev libswresample-dev libswscale-dev
+ENV FFMPEG_DEV_PACKAGES libavcodec-dev libavfilter-dev libavformat-dev libavresample-dev libavutil-dev libpostproc-dev libswresample-dev libswscale-dev libass-dev libwebp-dev libvorbis-dev zlib1g-dev libx264-dev libxvidcore-dev
+ENV BUILD_PACKAGES build-essential yasm autoconf automake libtool pkg-config git wget unzip texinfo
 
 RUN apt-get update && \
-    apt-get install -y git wget build-essential pkg-config unzip $OPENCV_PACKAGES $FFMPEG_DEV_PACKAGES && \
+    apt-get install -y $BUILD_PACKAGES $OPENCV_PACKAGES $FFMPEG_DEV_PACKAGES && \
     apt-get remove -y cmake && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Install custom, accelerated FFMPEG
+
+RUN cd /usr/local/src && \
+    wget http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 && \
+    tar xjvf ffmpeg-snapshot.tar.bz2 && \
+    cd /usr/local/src/ffmpeg && \
+    ./configure \
+      --build-suffix=-ffmpeg --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --cc=cc --cxx=g++ \
+      --enable-gpl --enable-shared --disable-stripping --enable-avresample \
+      --enable-avisynth --enable-libass --enable-libvorbis \
+      --enable-libwebp --enable-libxvid \
+      --enable-libdc1394 --enable-libx264 --enable-nonfree \
+      --enable-cuda --enable-cuvid --enable-nvenc --enable-nonfree --enable-libnpp \
+      --extra-cflags=-I/usr/local/cuda/include --extra-ldflags=-L/usr/local/cuda/lib64 && \
+    make -j $(nproc) && \
+    make install && \
+    rm -rf /usr/local/src/ffmpeg*
 
 # Upgrade CMake
 
