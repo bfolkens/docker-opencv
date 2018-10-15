@@ -1,8 +1,8 @@
-FROM nvidia/cuda:8.0-cudnn6-devel-ubuntu16.04
+FROM nvidia/cuda:8.0-cudnn7-devel-ubuntu16.04
 
 # Install some dep packages
 
-ENV OPENCV_VERSION 3.2.0
+ENV OPENCV_VERSION 3.4.3
 ENV OPENCV_PACKAGES libswscale-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
 
 ENV FFMPEG_VERSION 3.3.2
