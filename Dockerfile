@@ -1,19 +1,23 @@
-FROM nvidia/cuda:8.0-cudnn7-devel-ubuntu16.04
+FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
 
 # Install some dep packages
 
-ENV OPENCV_VERSION 3.4.3
-ENV OPENCV_PACKAGES libswscale-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
+ENV OPENCV_VERSION 3.4.6
+ENV OPENCV_PACKAGES libswscale-dev libjpeg-dev libpng-dev libtiff-dev libdc1394-22-dev
 
-ENV FFMPEG_VERSION 3.3.2
+ENV FFMPEG_VERSION 3.4.6
 ENV FFMPEG_DEV_PACKAGES libavcodec-dev libavfilter-dev libavformat-dev libavresample-dev libavutil-dev libpostproc-dev libswresample-dev libswscale-dev libass-dev libwebp-dev libvorbis-dev zlib1g-dev libx264-dev libxvidcore-dev
-ENV BUILD_PACKAGES build-essential yasm autoconf automake libtool pkg-config git wget unzip texinfo sudo
+ENV BUILD_PACKAGES build-essential yasm autoconf automake libtool pkg-config git wget unzip texinfo sudo cmake
 ENV CMAKE_PACKAGES curl libcurl4-openssl-dev openssl libssl-dev
 
+# Ubuntu 18+ doesn't include libjasper-dev or libpng12-dev
 RUN apt-get update && \
     apt-get install -y $BUILD_PACKAGES $OPENCV_PACKAGES $CMAKE_PACKAGES $FFMPEG_DEV_PACKAGES && \
-    apt-get remove -y cmake && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    wget http://security.ubuntu.com/ubuntu/pool/main/j/jasper/libjasper-dev_1.900.1-debian1-2.4ubuntu1.2_amd64.deb && \
+    wget http://security.ubuntu.com/ubuntu/pool/main/j/jasper/libjasper1_1.900.1-debian1-2.4ubuntu1.2_amd64.deb && \
+    apt-get install ./libjasper-dev_1.900.1-debian1-2.4ubuntu1.2_amd64.deb ./libjasper1_1.900.1-debian1-2.4ubuntu1.2_amd64.deb && \
+    # apt-get remove -y cmake && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /*.deb
 
 # Install custom, accelerated FFMPEG
 
@@ -35,15 +39,15 @@ RUN cd /usr/local/src && \
 
 # Upgrade CMake, build with HTTPS support
 
-RUN cd /usr/local/src && \
-    wget https://cmake.org/files/v3.9/cmake-3.9.6.tar.gz && \
-    tar xf cmake-3.9.6.tar.gz && \
-    cd cmake-3.9.6 && \
-    ./bootstrap --system-curl && \
-    ./configure --prefix=/usr && \
-    make && \
-    make install && \
-    rm -rf /usr/local/src/cmake*
+# RUN cd /usr/local/src && \
+#     wget https://cmake.org/files/v3.9/cmake-3.9.6.tar.gz && \
+#     tar xf cmake-3.9.6.tar.gz && \
+#     cd cmake-3.9.6 && \
+#     ./bootstrap --system-curl && \
+#     ./configure --prefix=/usr && \
+#     make && \
+#     make install && \
+#     rm -rf /usr/local/src/cmake*
 
 # Install OpenCV
 
